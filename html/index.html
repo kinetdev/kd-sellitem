@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KD Bán Vật Phẩm</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* CSS dự phòng nếu file style.css không hoạt động */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 800px;
+            background-color: rgba(10, 15, 25, 0.95);
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+            border: 1px solid #00b4fa;
+            box-shadow: 0 0 10px rgba(0, 180, 250, 0.5);
+        }
+        
+        .header {
+            padding: 20px;
+            background-color: rgba(5, 20, 35, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00b4fa;
+        }
+        
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 59, 48, 0.3);
+            border: 1px solid rgba(255, 59, 48, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .category-tabs {
+            display: flex;
+            padding: 0 15px;
+            border-bottom: 1px solid rgba(0, 180, 250, 0.5);
+            overflow-x: auto;
+        }
+        
+        .category-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .category-tab.active {
+            color: #ffffff;
+            border-bottom: 2px solid #00b4fa;
+        }
+        
+        .items-container {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .item-card {
+            background-color: rgba(15, 25, 35, 0.85);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 1px solid rgba(0, 180, 250, 0.3);
+            min-height: 160px;
+        }
+        
+        .item-image-container {
+            width: 100%;
+            height: 80px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 1px solid rgba(0, 180, 250, 0.3);
+        }
+        
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <div class="header">
+            <h1 id="zone-name">Bán Vật Phẩm</h1>
+            <div class="close-btn" id="close-btn">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        
+        <div class="category-tabs" id="category-tabs">
+            <!-- Categories will be added dynamically via JS -->
+            <button class="category-tab active" data-category="all"><span>Tất cả</span></button>
+        </div>
+        
+        <div class="items-container" id="items-container">
+            <!-- Items will be added dynamically via JS -->
+        </div>
+    </div>
+    
+    <!-- Sell modal -->
+    <div class="modal" id="sell-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="modal-item-name">Vật phẩm</span></h2>
+                <div class="close-modal" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-item-details">
+                    <div class="modal-item-image-container">
+                        <img id="modal-item-image" class="modal-item-image" src="" alt="Item Image">
+                    </div>
+                    <div class="modal-item-info">
+                        <div class="modal-item-label" id="modal-item-label">Tên vật phẩm</div>
+                        <div class="modal-item-price">Giá: $<span id="modal-item-price">0</span></div>
+                        <div class="modal-item-price">Biến động: <span id="modal-item-fluctuation"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="amount-selector">
+                    <button class="amount-btn" id="decrease-amount">-</button>
+                    <input type="number" id="amount-input" min="1" value="1">
+                    <button class="amount-btn" id="increase-amount">+</button>
+                </div>
+                
+                <div class="total-price-container">
+                    <div class="total-price-label">Tổng tiền :</div>
+                    <div class="total-price-value"><span id="modal-total-price">0</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-btn">Hủy bỏ</button>
+                <button id="confirm-btn">Xác nhận bán</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html> 
