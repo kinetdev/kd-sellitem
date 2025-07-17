@@ -35,7 +35,7 @@ Bạn có thể tùy chỉnh các thiết lập trong file `config.lua`:
 
 ## Ảnh chụp màn hình
 
-![Giao diện bán vật phẩm]([https://media.discordapp.net/attachments/1352180436381601872/1365200615734644827/image.png])
+![Giao diện bán vật phẩm](https://media.discordapp.net/attachments/1352180436381601872/1365200615734644827/image.png?ex=68793566&is=6877e3e6&hm=0ab7ba0990593ef8711d819d804d0945a6a0f501be5e6127799a4e240dd45745&=&format=webp&quality=lossless&width=1522&height=856)
 
 ## Hỗ trợ và Phát triển
 
